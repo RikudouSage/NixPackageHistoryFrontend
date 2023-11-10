@@ -19,10 +19,10 @@ export class AppComponent implements OnInit {
   public packages: Package[] = [];
   public autocompleteHints: string[] = [];
   public childDisplayed: boolean = false;
+  public error: boolean = false;
 
   constructor(
     private readonly packageManager: PackageManagerService,
-    private readonly cache: CacheService,
     private readonly versionComparator: VersionComparatorService,
     private readonly router: Router,
     private readonly changeDetector: ChangeDetectorRef,
@@ -30,7 +30,10 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.packageManager.getPackageNames().subscribe(packageNames => this.packageNames = packageNames);
+    this.packageManager.getPackageNames().subscribe({
+      next: packageNames => this.packageNames = packageNames,
+      error: () => this.error = true,
+    });
 
     this.form.controls.packageName.valueChanges.subscribe(() => this.packages = []);
     this.form.controls.packageName.valueChanges.pipe(

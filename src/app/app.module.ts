@@ -9,6 +9,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import { FormatNumberPipe } from './pipes/format-number.pipe';
 import { SearchResultsComponent } from './pages/search-results/search-results.component';
 import { PackageDetailComponent } from './pages/package-detail/package-detail.component';
+import { ErrorComponent } from './components/error/error.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { PackageDetailComponent } from './pages/package-detail/package-detail.co
     LoaderComponent,
     FormatNumberPipe,
     SearchResultsComponent,
-    PackageDetailComponent
+    PackageDetailComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,

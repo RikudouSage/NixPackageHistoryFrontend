@@ -2,50 +2,55 @@
   <app-loader message="Populating package cache, please wait..."/>
 </ng-template>
 
-
-<div *ngIf="packageNames.length; else loadingPackages">
-  <header>
-    <div class="navbar navbar-static-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <div>
-            <ul class="nav pull-left">
-              <li><a routerLink="/">Search through all previous versions of NixOS packages</a></li>
-              <li><a href="https://search.nixos.org" target="_blank" rel="noreferrer noopener">Official NixOS search</a></li>
-            </ul>
+<ng-template #content>
+  <div *ngIf="packageNames.length; else loadingPackages">
+    <header>
+      <div class="navbar navbar-static-top">
+        <div class="navbar-inner">
+          <div class="container">
+            <div>
+              <ul class="nav pull-left">
+                <li><a routerLink="/">Search through all previous versions of NixOS packages</a></li>
+                <li><a href="https://search.nixos.org" target="_blank" rel="noreferrer noopener">Official NixOS search</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </header>
-  <div class="container main">
-    <div id="content">
-      <div class="search-page" [class.not-asked]="!childDisplayed" [class.success]="childDisplayed">
-        <h1>Search through <strong>{{packageNames.length | formatNumber}} packages</strong></h1>
-        <form class="search-input" [formGroup]="form" (submit)="search()">
-          <div>
-            <div class="position-relative">
-              <input type="text" id="search-query-input" autofocus autocomplete="off"
-                     formControlName="packageName"
-                     placeholder="Search for packages"/>
-              <ul class="autocomplete-results" *ngIf="!childDisplayed">
-                <li *ngFor="let option of autocompleteHints" (click)="goToPackage(option)">
-                  {{option}}
-                </li>
-              </ul>
+    </header>
+    <div class="container main">
+      <div id="content">
+        <div class="search-page" [class.not-asked]="!childDisplayed" [class.success]="childDisplayed">
+          <h1>Search through <strong>{{packageNames.length | formatNumber}} packages</strong></h1>
+          <form class="search-input" [formGroup]="form" (submit)="search()">
+            <div>
+              <div class="position-relative">
+                <input type="text" id="search-query-input" autofocus autocomplete="off"
+                       formControlName="packageName"
+                       placeholder="Search for packages"/>
+                <ul class="autocomplete-results" *ngIf="!childDisplayed">
+                  <li *ngFor="let option of autocompleteHints" (click)="goToPackage(option)">
+                    {{option}}
+                  </li>
+                </ul>
+              </div>
+              <button class="btn" type="submit">Search</button>
             </div>
-            <button class="btn" type="submit">Search</button>
-          </div>
-        </form>
-        <router-outlet (activate)="childLoaded()" (deactivate)="childDisplayed = false"></router-outlet>
+          </form>
+          <router-outlet (activate)="childLoaded()" (deactivate)="childDisplayed = false"></router-outlet>
+        </div>
       </div>
+      <footer class="container text-center">
+        <div>
+          <span>Report issues on </span>
+          <a href="https://github.com/RikudouSage/NixPackageHistoryFrontend">GitHub</a>
+          <span>.</span>
+        </div>
+      </footer>
     </div>
-    <footer class="container text-center">
-      <div>
-        <span>Report issues on </span>
-        <a href="https://github.com/RikudouSage/NixPackageHistoryFrontend">GitHub</a>
-        <span>.</span>
-      </div>
-    </footer>
   </div>
-</div>
+</ng-template>
+
+<app-error message="There was an error while trying to fetch the list of packages." *ngIf="error else content">
+  You can file an issue on <a href="https://github.com/RikudouSage/NixPackageHistoryFrontend" target="_blank" rel="noopener noreferrer">GitHub</a>.
+</app-error>

@@ -1,0 +1,26 @@
+$loaderSize: 80px;
+
+:host {
+  width: 100vw;
+  height: 100vh;
+  background: white;
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.message {
+  text-align: center;
+  font-size: 1.6rem;
+  position: relative;
+  top: calc(50% - 0.8rem);
+  color: darkred;
+}
+
+.content {
+  text-align: center;
+  font-size: 1.2rem;
+  position: relative;
+  top: calc(50% + 1.5rem);
+}
