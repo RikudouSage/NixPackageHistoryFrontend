@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: '', // todo
+  apiUrl: 'https://api.nix.chrastecky.com',
 };
