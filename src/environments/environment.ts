@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'https://api.nix.chrastecky.com',
+  apiUrl: 'https://api.history.nix-packages.com',
 };
