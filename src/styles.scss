@@ -1,1 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+// from https://github.com/NixOS/nixos-search/blob/0d663f27fa55a225a4c71f0b4be7c64f26214fff/frontend/src/index.scss
+
+@import "bootstrap-2.3.2/css/bootstrap.css";
+@import "bootstrap-2.3.2/css/bootstrap-responsive.css";
+@import "scss/nix-search";

@@ -1,10 +1,76 @@
-import { Component } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {Package, PackageManagerService} from "./services/package-manager.service";
+import {CacheService} from "./services/cache.service";
+import {debounceTime, from, map, Observable, of, switchMap, tap} from "rxjs";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {VersionComparatorService} from "./services/version-comparator.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'NixOsVersionSearchFrontend';
+export class AppComponent implements OnInit {
+  public packageNames: string[] = [];
+  public form = new FormGroup({
+    packageName: new FormControl<string>('', [Validators.required]),
+  });
+  public packages: Package[] = [];
+  public autocompleteHints: string[] = [];
+  public childDisplayed: boolean = false;
+
+  constructor(
+    private readonly packageManager: PackageManagerService,
+    private readonly cache: CacheService,
+    private readonly versionComparator: VersionComparatorService,
+    private readonly router: Router,
+    private readonly changeDetector: ChangeDetectorRef,
+  ) {
+  }
+
+  public ngOnInit(): void {
+    this.packageManager.getPackageNames().subscribe(packageNames => this.packageNames = packageNames);
+
+    this.form.controls.packageName.valueChanges.subscribe(() => this.packages = []);
+    this.form.controls.packageName.valueChanges.pipe(
+      debounceTime(300),
+      switchMap(packageName => this.packageManager.getPackage(packageName!)),
+      map(packages => packages.sort((a, b) => this.versionComparator.compare(a.version, b.version))),
+    ).subscribe(packages => this.packages = packages);
+    this.form.controls.packageName.valueChanges.pipe(
+      debounceTime(300)
+    ).subscribe(packageName => {
+      this.autocompleteHints = this.packageNames
+        .filter(item => item.toLowerCase().startsWith(packageName!.toLowerCase()))
+        .concat(
+          ...this.packageNames.filter(item => item.toLowerCase().includes(packageName!.toLowerCase()))
+        )
+        .slice(0, 100)
+      ;
+    });
+
+  }
+
+  public async goToPackage(packageName: string) {
+    this.form.patchValue({packageName: packageName});
+    await this.router.navigateByUrl(this.router.createUrlTree(['/search'], {
+      queryParams: {
+        packageName: packageName,
+      }
+    }));
+  }
+
+  public async childLoaded(): Promise<void> {
+    this.childDisplayed = true;
+    this.changeDetector.detectChanges();
+  }
+
+  public async search(): Promise<void> {
+    await this.router.navigateByUrl(this.router.createUrlTree(['/search'], {
+      queryParams: {
+        search: this.form.controls.packageName.value!,
+      }
+    }));
+  }
 }

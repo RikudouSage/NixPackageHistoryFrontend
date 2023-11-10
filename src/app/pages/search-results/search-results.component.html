@@ -1,0 +1,63 @@
+<ng-template #loader>
+  <app-loader message="Loading packages"/>
+</ng-template>
+<div class="search-results" *ngIf="loaded else loader">
+  <div>
+    <div>
+      <div></div>
+      <h2 *ngIf="search">
+        Showing results {{(start + 1) | formatNumber}}-{{(end + 1) | formatNumber}} of
+        <strong>{{packageNames.length | formatNumber}} packages</strong>.
+      </h2>
+      <h2 *ngIf="singlePackage">
+        Showing versions for package <strong>{{singlePackage}}</strong>
+      </h2>
+    </div>
+    <ul>
+      <li class="package" *ngFor="let packageName of currentPageResults">
+        <span (click)="openPackage(packageName)">
+          <a href="javascript:void(0)">
+            {{packageName}}
+          </a>
+        </span>
+        <ng-container *ngIf="openedPackage === packageName">
+          ({{versions.length}} versions)
+        </ng-container>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div *ngIf="openedPackage === packageName">
+          <div></div>
+          <table class="table table-bordered table-striped">
+            <tr>
+              <th>Version</th>
+              <th>Revision</th>
+            </tr>
+            <tr *ngFor="let version of versions">
+              <td>
+                <a routerLink="/package/{{version.name}}/{{version.version}}">{{version.version}}</a>
+              </td>
+              <td>{{version.revision}}</td>
+            </tr>
+          </table>
+        </div>
+      </li>
+    </ul>
+    <div>
+      <ul class="pager" *ngIf="search">
+        <li>
+          <button class="btn" [disabled]="currentPage <= 1" (click)="goToPage(1)">First</button>
+        </li>
+        <li>
+          <button class="btn" [disabled]="currentPage <= 1" (click)="goToPage(currentPage - 1)">Previous</button>
+        </li>
+        <li>
+          <button class="btn" [disabled]="currentPage >= maxPage" (click)="goToPage(currentPage + 1)">Next</button>
+        </li>
+        <li>
+          <button class="btn" [disabled]="currentPage >= maxPage" (click)="goToPage(maxPage)">Last</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<ng-template #loader>
+  <app-loader message="Loading package version" />
+</ng-template>
+
+<div class="search-results" *ngIf="loaded else loader">
+  <div>
+    <div>
+      <div></div>
+      <h2>Package <strong>{{packageDetail!.name}}</strong>, version <strong>{{packageDetail!.version}}</strong></h2>
+
+      <p>This version is found in revision <strong>{{packageDetail!.revision}}</strong>.</p>
+
+      <hr>
+
+      <h3>Install using <strong>nix-shell</strong></h3>
+
+      <p>To install using <code>nix-shell</code>, run this command:</p>
+      <p><code>nix-shell -p {{packageDetail!.name}} -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/{{packageDetail!.revision}}.tar.gz</code></p>
+
+      <h3>Install using <strong>shell.nix</strong> file</h3>
+      <p>Put this into a <code>shell.nix</code> file:</p>
+      <pre>
+&#123; pkgs ? import &lt;nixpkgs> &#123;} }:
+pkgs.mkShell &#123;
+    nativeBuildInputs = with pkgs.buildPackages;
+    let
+      custom = import (builtins.fetchTarball https://github.com/nixos/nixpkgs/tarball/{{packageDetail!.revision}}) &#123;};
+    in
+    [
+      custom.{{packageDetail!.name}}
+    ];
+}</pre>
+      <p>Afterwards, just run <code>shell-nix</code>.</p>
+
+      <h3>Install using <strong>configuration.nix</strong> file (NixOS)</h3>
+      <p>Import the custom revision at the top of your <code>configuration.nix</code>:</p>
+      <pre>
+&#123; config, pkgs, ... }:
+let
+  custom = import (builtins.fetchTarball https://github.com/nixos/nixpkgs/tarball/{{packageDetail!.revision}}) &#123;
+    config = config.nixpkgs.config;
+  };
+in
+&#123;</pre>
+      <p>Then, in your list of packages, add <code>custom.{{packageDetail!.name}}</code>:</p>
+      <pre>
+environment.systemPackages = [
+  custom.{{packageDetail!.name}}
+  pkgs.your-other-packages
+];</pre>
+      <h3>Install using <code>nix-env</code> (not recommended)</h3>
+      <p>
+        To install using <code>nix-env</code>, run the following command:
+      </p>
+      <code>nix-env -iA {{packageDetail!.name}} -f https://github.com/NixOS/nixpkgs/archive/{{packageDetail!.revision}}.tar.gz</code>
+    </div>
+  </div>
+</div>
