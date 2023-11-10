@@ -64,7 +64,7 @@ export class SearchResultsComponent implements OnInit {
           })
         ;
         this.start = this.currentPage * this.perPage - this.perPage;
-        this.end = Math.min(this.currentPage * this.perPage - 1, this.packageNames.length - 1);
+        this.end = Math.min(this.currentPage * this.perPage, this.packageNames.length);
         this.currentPageResults = this.packageNames.slice(this.start, this.end);
         this.maxPage = Math.ceil(this.packageNames.length / this.perPage);
       }

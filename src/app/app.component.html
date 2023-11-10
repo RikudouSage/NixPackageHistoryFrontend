@@ -10,7 +10,7 @@
           <div class="container">
             <div>
               <ul class="nav pull-left">
-                <li><a routerLink="/">Search through all previous versions of NixOS packages</a></li>
+                <li><a routerLink="/">Home</a></li>
                 <li><a href="https://search.nixos.org" target="_blank" rel="noreferrer noopener">Official NixOS search</a></li>
               </ul>
             </div>
@@ -27,7 +27,7 @@
               <div class="position-relative">
                 <input type="text" id="search-query-input" autofocus autocomplete="off"
                        formControlName="packageName"
-                       placeholder="Search for packages"/>
+                       placeholder="Search for package versions"/>
                 <ul class="autocomplete-results" *ngIf="!childDisplayed">
                   <li *ngFor="let option of autocompleteHints" (click)="goToPackage(option)">
                     {{option}}

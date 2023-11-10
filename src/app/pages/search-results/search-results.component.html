@@ -6,7 +6,7 @@
     <div>
       <div></div>
       <h2 *ngIf="search">
-        Showing results {{(start + 1) | formatNumber}}-{{(end + 1) | formatNumber}} of
+        Showing results {{(start + 1) | formatNumber}}-{{end | formatNumber}} of
         <strong>{{packageNames.length | formatNumber}} packages</strong>.
       </h2>
       <h2 *ngIf="singlePackage">
