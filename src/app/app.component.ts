@@ -5,6 +5,7 @@ import {debounceTime, from, map, Observable, of, switchMap, tap} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {VersionComparatorService} from "./services/version-comparator.service";
 import {Router} from "@angular/router";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,7 @@ export class AppComponent implements OnInit {
   public packages: Package[] = [];
   public autocompleteHints: string[] = [];
   public childDisplayed: boolean = false;
-  public error: boolean = false;
+  public error: string = '';
 
   constructor(
     private readonly packageManager: PackageManagerService,
@@ -32,7 +33,21 @@ export class AppComponent implements OnInit {
   public ngOnInit(): void {
     this.packageManager.getPackageNames().subscribe({
       next: packageNames => this.packageNames = packageNames,
-      error: () => this.error = true,
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 429) {
+          const date = error.headers.get('Retry-After');
+          this.error = 'You have requested this resource too many times and have been rate limited.'
+          if (date) {
+            const dateFormatted = new Intl.DateTimeFormat('en-US', {
+              dateStyle: 'medium',
+              timeStyle: 'short'
+            }).format(new Date(date));
+            this.error += ` Please try again after ${dateFormatted}.`;
+          }
+          return;
+        }
+        this.error = 'There was an error while trying to fetch the list of packages.';
+      },
     });
 
     this.form.controls.packageName.valueChanges.subscribe(() => this.packages = []);
