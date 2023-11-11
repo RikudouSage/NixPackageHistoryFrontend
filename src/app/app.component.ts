@@ -64,13 +64,13 @@ export class AppComponent implements OnInit {
     this.form.controls.packageName.valueChanges.pipe(
       debounceTime(300)
     ).subscribe(packageName => {
-      this.autocompleteHints = this.packageNames
+      this.autocompleteHints = [...new Set(this.packageNames
         .filter(item => item.toLowerCase().startsWith(packageName!.toLowerCase()))
         .concat(
           ...this.packageNames.filter(item => item.toLowerCase().includes(packageName!.toLowerCase()))
         )
         .slice(0, 100)
-      ;
+      )];
     });
 
   }
