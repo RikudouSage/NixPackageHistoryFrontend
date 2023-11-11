@@ -20,26 +20,26 @@
       <h3>Install using <strong>shell.nix</strong> file</h3>
       <p>Put this into a <code>shell.nix</code> file:</p>
       <pre>
-&#123; pkgs ? import &lt;nixpkgs> &#123;} }:
+&#123; pkgs ? import &lt;nixpkgs> &#123;&#125; &#125;:
 pkgs.mkShell &#123;
     nativeBuildInputs = with pkgs.buildPackages;
     let
-      custom = import (builtins.fetchTarball https://github.com/nixos/nixpkgs/tarball/{{packageDetail!.revision}}) &#123;};
+      custom = import (builtins.fetchTarball https://github.com/nixos/nixpkgs/tarball/{{packageDetail!.revision}}) &#123;&#125;;
     in
     [
       custom.{{packageDetail!.name}}
     ];
-}</pre>
+&#125;</pre>
       <p>Afterwards, just run <code>shell-nix</code>.</p>
 
       <h3>Install using <strong>configuration.nix</strong> file (NixOS)</h3>
       <p>Import the custom revision at the top of your <code>configuration.nix</code>:</p>
       <pre>
-&#123; config, pkgs, ... }:
+&#123; config, pkgs, ... &#125;:
 let
   custom = import (builtins.fetchTarball https://github.com/nixos/nixpkgs/tarball/{{packageDetail!.revision}}) &#123;
     config = config.nixpkgs.config;
-  };
+  &#125;;
 in
 &#123;</pre>
       <p>Then, in your list of packages, add <code>custom.{{packageDetail!.name}}</code>:</p>
