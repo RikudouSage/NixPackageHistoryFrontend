@@ -1,16 +1,21 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Package, PackageManagerService} from "./services/package-manager.service";
-import {CacheService} from "./services/cache.service";
-import {debounceTime, from, map, Observable, of, switchMap, tap} from "rxjs";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {debounceTime, map, switchMap} from "rxjs";
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {VersionComparatorService} from "./services/version-comparator.service";
-import {Router} from "@angular/router";
+import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
+import {FormatNumberPipe} from './pipes/format-number.pipe';
+import {ErrorComponent} from './components/error/error.component';
+import {NgFor, NgIf} from '@angular/common';
+import {LoaderComponent} from './components/loader/loader.component';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [LoaderComponent, NgIf, RouterLink, ReactiveFormsModule, NgFor, RouterOutlet, ErrorComponent, FormatNumberPipe]
 })
 export class AppComponent implements OnInit {
   public packageNames: string[] = [];

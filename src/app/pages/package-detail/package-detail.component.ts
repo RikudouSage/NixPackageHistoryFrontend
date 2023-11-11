@@ -2,11 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {Package, PackageManagerService} from "../../services/package-manager.service";
 import {ActivatedRoute} from "@angular/router";
 import {lastValueFrom} from "rxjs";
+import {NgIf} from '@angular/common';
+import {LoaderComponent} from '../../components/loader/loader.component';
 
 @Component({
-  selector: 'app-package-detail',
-  templateUrl: './package-detail.component.html',
-  styleUrls: ['./package-detail.component.scss']
+    selector: 'app-package-detail',
+    templateUrl: './package-detail.component.html',
+    styleUrls: ['./package-detail.component.scss'],
+    standalone: true,
+    imports: [LoaderComponent, NgIf]
 })
 export class PackageDetailComponent implements OnInit {
   public loaded = false;

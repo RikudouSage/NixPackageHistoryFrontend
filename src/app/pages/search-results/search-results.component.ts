@@ -1,13 +1,18 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {Package, PackageManagerService} from "../../services/package-manager.service";
 import {lastValueFrom} from "rxjs";
 import {VersionComparatorService} from "../../services/version-comparator.service";
+import {FormatNumberPipe} from '../../pipes/format-number.pipe';
+import {NgFor, NgIf} from '@angular/common';
+import {LoaderComponent} from '../../components/loader/loader.component';
 
 @Component({
-  selector: 'app-search-results',
-  templateUrl: './search-results.component.html',
-  styleUrls: ['./search-results.component.scss']
+    selector: 'app-search-results',
+    templateUrl: './search-results.component.html',
+    styleUrls: ['./search-results.component.scss'],
+    standalone: true,
+    imports: [LoaderComponent, NgIf, NgFor, RouterLink, FormatNumberPipe]
 })
 export class SearchResultsComponent implements OnInit {
   private readonly perPage = 50;
