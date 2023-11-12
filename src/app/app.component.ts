@@ -1,5 +1,5 @@
 import {Component, computed, OnInit, signal} from '@angular/core';
-import {PackageManagerService} from "./services/package-manager.service";
+import {LatestRevision, PackageManagerService} from "./services/package-manager.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -8,18 +8,20 @@ import {ErrorComponent} from './components/error/error.component';
 import {NgFor, NgIf} from '@angular/common';
 import {LoaderComponent} from './components/loader/loader.component';
 import {toSignal} from "@angular/core/rxjs-interop";
+import {FormatDatetimePipe} from "./pipes/format-datetime.pipe";
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     standalone: true,
-    imports: [LoaderComponent, NgIf, RouterLink, ReactiveFormsModule, NgFor, RouterOutlet, ErrorComponent, FormatNumberPipe]
+  imports: [LoaderComponent, NgIf, RouterLink, ReactiveFormsModule, NgFor, RouterOutlet, ErrorComponent, FormatNumberPipe, FormatDatetimePipe]
 })
 export class AppComponent implements OnInit {
   public form = new FormGroup({
     packageName: new FormControl<string>('', [Validators.required]),
   });
+  public latestRevision: LatestRevision | null = null;
 
   private currentPackageName = toSignal(this.form.controls.packageName.valueChanges, {initialValue: ''});
 
@@ -60,6 +62,7 @@ export class AppComponent implements OnInit {
         this.error.set('There was an error while trying to fetch the list of packages.');
       },
     });
+    this.packageManager.getLatestRevision().subscribe(revision => this.latestRevision = revision);
   }
 
   public async goToPackage(packageName: string) {

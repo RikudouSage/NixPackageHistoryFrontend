@@ -10,6 +10,11 @@ export interface Package {
   version: string;
 }
 
+export interface LatestRevision {
+  datetime: string | null;
+  revision: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -63,5 +68,9 @@ export class PackageManagerService {
 
   private getFreshPackageNames(): Observable<string[]> {
     return this.httpClient.get<string[]>(`${environment.apiUrl}/packages`);
+  }
+
+  public getLatestRevision(): Observable<LatestRevision> {
+    return this.httpClient.get<LatestRevision>(`${environment.apiUrl}/latest-revision`);
   }
 }

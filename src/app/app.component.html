@@ -45,6 +45,9 @@
           <span>Report issues on </span>
           <a href="https://github.com/RikudouSage/NixPackageHistoryFrontend">GitHub</a>
           <span>.</span>
+          <ng-container *ngIf="latestRevision?.datetime && latestRevision?.revision">
+            Latest revision: <strong>{{latestRevision!.revision}}</strong> ({{latestRevision!.datetime! | formatDatetime}})
+          </ng-container>
         </div>
       </footer>
     </div>
