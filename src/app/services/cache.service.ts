@@ -21,7 +21,7 @@ export class CacheService {
     private readonly database: DatabaseService,
   ) { }
 
-  public async storeCache<T>(key: string, validUntil: Date, value: T): Promise<CacheItem<T>> {
+  public async storeCache<T>(key: string, validUntil: Date | undefined, value: T): Promise<CacheItem<T>> {
     const item: CacheItem<T> = {
       key: key,
       validUntil: validUntil,
@@ -49,7 +49,7 @@ export class CacheService {
       validUntil: deserialized.validUntil ? new Date(deserialized.validUntil) : undefined,
       value: deserialized.value,
     };
-    if (item.validUntil!.getTime() < new Date().getTime() && validOnly) {
+    if (item.validUntil && item.validUntil.getTime() < new Date().getTime() && validOnly) {
       return {
         key: key,
         validUntil: undefined,

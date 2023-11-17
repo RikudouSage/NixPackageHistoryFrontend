@@ -27,24 +27,34 @@ export class PackageManagerService {
   public getPackageNames(): Observable<string[]> {
     return from(this.cache.getItem<string[]>('package_names', false))
       .pipe(
-        tap(cacheItem => {
-          if (cacheItem.value === undefined || cacheItem.validUntil === undefined) {
-            return;
-          }
-
-          if (cacheItem.validUntil.getTime() > new Date().getTime()) {
-            return;
-          }
-
-          this.getFreshPackageNames().subscribe(names => {
-            this.cache.storeCache('package_names', new Date(new Date().getTime() + 86_400_000), names);
+        tap(() => {
+          this.cache.getItem<LatestRevision>('latest_revision', true).then(storedRevision => {
+            this.getLatestRevision().subscribe(latestRevision => {
+              if (
+                storedRevision.value === undefined
+                || storedRevision.value.datetime === null
+                || latestRevision.datetime === null
+                || new Date(storedRevision.value.datetime).getTime() < new Date(latestRevision.datetime).getTime()
+              ) {
+                this.getFreshPackageNames().subscribe(names => {
+                  this.cache.storeCache('package_names', undefined, names).then(() => {
+                    this.cache.storeCache('latest_revision', undefined, latestRevision);
+                  });
+                });
+              }
+            });
           });
         }),
         switchMap(cacheItem => {
           if (cacheItem.value === undefined) {
             return this.getFreshPackageNames().pipe(
               tap(names => {
-                this.cache.storeCache('package_names', new Date(new Date().getTime() + 86_400_000), names);
+                this.cache.storeCache('package_names', undefined, names);
+              }),
+              tap(() => {
+                this.getLatestRevision().subscribe(revision => {
+                  this.cache.storeCache('latest_revision', undefined, revision);
+                })
               }),
             );
           }
