@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {debounceTime, from, map, Observable, of, switchMap, tap} from "rxjs";
+import {from, Observable, of, switchMap, tap} from "rxjs";
 import {environment} from "../../environments/environment";
 import {CacheService} from "./cache.service";
 
@@ -8,6 +8,7 @@ export interface Package {
   name: string;
   revision: string;
   version: string;
+  datetime: string;
 }
 
 export interface LatestRevision {

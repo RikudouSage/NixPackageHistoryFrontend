@@ -6,13 +6,14 @@ import {VersionComparatorService} from "../../services/version-comparator.servic
 import {FormatNumberPipe} from '../../pipes/format-number.pipe';
 import {NgFor, NgIf} from '@angular/common';
 import {LoaderComponent} from '../../components/loader/loader.component';
+import {FormatDatetimePipe} from "../../pipes/format-datetime.pipe";
 
 @Component({
     selector: 'app-search-results',
     templateUrl: './search-results.component.html',
     styleUrls: ['./search-results.component.scss'],
     standalone: true,
-    imports: [LoaderComponent, NgIf, NgFor, RouterLink, FormatNumberPipe]
+  imports: [LoaderComponent, NgIf, NgFor, RouterLink, FormatNumberPipe, FormatDatetimePipe]
 })
 export class SearchResultsComponent implements OnInit {
   private readonly perPage = 50;

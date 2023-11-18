@@ -32,12 +32,14 @@
             <tr>
               <th>Version</th>
               <th>Revision</th>
+              <th>Date & time</th>
             </tr>
             <tr *ngFor="let version of versions">
               <td>
                 <a routerLink="/package/{{version.name}}/{{version.version}}">{{version.version}}</a>
               </td>
               <td>{{version.revision}}</td>
+              <td>{{version.datetime | formatDatetime}}</td>
             </tr>
           </table>
         </div>

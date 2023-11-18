@@ -4,13 +4,14 @@ import {ActivatedRoute} from "@angular/router";
 import {lastValueFrom} from "rxjs";
 import {NgIf} from '@angular/common';
 import {LoaderComponent} from '../../components/loader/loader.component';
+import {FormatDatetimePipe} from "../../pipes/format-datetime.pipe";
 
 @Component({
     selector: 'app-package-detail',
     templateUrl: './package-detail.component.html',
     styleUrls: ['./package-detail.component.scss'],
     standalone: true,
-    imports: [LoaderComponent, NgIf]
+  imports: [LoaderComponent, NgIf, FormatDatetimePipe]
 })
 export class PackageDetailComponent implements OnInit {
   public loaded = false;
