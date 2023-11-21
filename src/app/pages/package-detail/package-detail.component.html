@@ -50,6 +50,10 @@ environment.systemPackages = [
 ];</pre>
       <h3>Install using <code>nix-env</code></h3>
       <p>
+        <strong>Unless you really know what you're doing, you should not use <code>nix-env</code> to install an old version of a package.</strong>
+        If you're not sure why this might be a bad idea, you probably shouldn't be doing it and you should use <code>nix-shell</code> instead.
+      </p>
+      <p>
         To install using <code>nix-env</code>, run the following command:
       </p>
       <code>nix-env -iA {{packageDetail!.name}} -f https://github.com/NixOS/nixpkgs/archive/{{packageDetail!.revision}}.tar.gz</code>
