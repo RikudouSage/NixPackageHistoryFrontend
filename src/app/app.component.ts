@@ -5,7 +5,6 @@ import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 import {FormatNumberPipe} from './pipes/format-number.pipe';
 import {ErrorComponent} from './components/error/error.component';
-import {NgFor, NgIf} from '@angular/common';
 import {LoaderComponent} from './components/loader/loader.component';
 import {toSignal} from "@angular/core/rxjs-interop";
 import {FormatDatetimePipe} from "./pipes/format-datetime.pipe";
@@ -21,7 +20,7 @@ interface AutocompleteHint {
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     standalone: true,
-  imports: [LoaderComponent, NgIf, RouterLink, ReactiveFormsModule, NgFor, RouterOutlet, ErrorComponent, FormatNumberPipe, FormatDatetimePipe, PseudoTagsPipe]
+  imports: [LoaderComponent, RouterLink, ReactiveFormsModule, RouterOutlet, ErrorComponent, FormatNumberPipe, FormatDatetimePipe, PseudoTagsPipe]
 })
 export class AppComponent implements OnInit {
   public form = new FormGroup({

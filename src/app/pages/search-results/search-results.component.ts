@@ -4,7 +4,6 @@ import {Package, PackageManagerService} from "../../services/package-manager.ser
 import {lastValueFrom} from "rxjs";
 import {VersionComparatorService} from "../../services/version-comparator.service";
 import {FormatNumberPipe} from '../../pipes/format-number.pipe';
-import {NgFor, NgIf} from '@angular/common';
 import {LoaderComponent} from '../../components/loader/loader.component';
 import {FormatDatetimePipe} from "../../pipes/format-datetime.pipe";
 
@@ -13,7 +12,7 @@ import {FormatDatetimePipe} from "../../pipes/format-datetime.pipe";
     templateUrl: './search-results.component.html',
     styleUrls: ['./search-results.component.scss'],
     standalone: true,
-  imports: [LoaderComponent, NgIf, NgFor, RouterLink, FormatNumberPipe, FormatDatetimePipe]
+  imports: [LoaderComponent, RouterLink, FormatNumberPipe, FormatDatetimePipe]
 })
 export class SearchResultsComponent implements OnInit {
   private readonly perPage = 50;

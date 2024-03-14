@@ -1,25 +1,24 @@
-<ng-template #loader>
+@if (!loaded) {
   <app-loader message="Loading package version" />
-</ng-template>
-
-<div class="search-results" *ngIf="loaded else loader">
-  <div>
+} @else {
+  <div class="search-results">
     <div>
-      <div></div>
-      <h2>Package <strong>{{packageDetail!.name}}</strong>, version <strong>{{packageDetail!.version}}</strong></h2>
+      <div>
+        <div></div>
+        <h2>Package <strong>{{packageDetail!.name}}</strong>, version <strong>{{packageDetail!.version}}</strong></h2>
 
-      <p>This version is found in revision <strong>{{packageDetail!.revision}}</strong> (created at {{packageDetail!.datetime | formatDatetime}}).</p>
+        <p>This version is found in revision <strong>{{packageDetail!.revision}}</strong> (created at {{packageDetail!.datetime | formatDatetime}}).</p>
 
-      <hr>
+        <hr>
 
-      <h3>Install using <strong>nix-shell</strong></h3>
+        <h3>Install using <strong>nix-shell</strong></h3>
 
-      <p>To install using <code>nix-shell</code>, run this command:</p>
-      <p><code>nix-shell -p {{packageDetail!.name}} -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/{{packageDetail!.revision}}.tar.gz</code></p>
+        <p>To install using <code>nix-shell</code>, run this command:</p>
+        <p><code>nix-shell -p {{packageDetail!.name}} -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/{{packageDetail!.revision}}.tar.gz</code></p>
 
-      <h3>Install using <strong>shell.nix</strong> file</h3>
-      <p>Put this into a <code>shell.nix</code> file:</p>
-      <pre>
+        <h3>Install using <strong>shell.nix</strong> file</h3>
+        <p>Put this into a <code>shell.nix</code> file:</p>
+        <pre>
 &#123; pkgs ? import &lt;nixpkgs> &#123;&#125; &#125;:
 pkgs.mkShell &#123;
     nativeBuildInputs = with pkgs.buildPackages;
@@ -28,13 +27,13 @@ pkgs.mkShell &#123;
     in
     [
       custom.{{packageDetail!.name}}
-    ];
+          ];
 &#125;</pre>
-      <p>Afterwards, just run <code>nix-shell</code>.</p>
+        <p>Afterwards, just run <code>nix-shell</code>.</p>
 
-      <h3>Install using <strong>configuration.nix</strong> file (NixOS)</h3>
-      <p>Import the custom revision at the top of your <code>configuration.nix</code>:</p>
-      <pre>
+        <h3>Install using <strong>configuration.nix</strong> file (NixOS)</h3>
+        <p>Import the custom revision at the top of your <code>configuration.nix</code>:</p>
+        <pre>
 &#123; config, pkgs, ... &#125;:
 let
   custom = import (builtins.fetchTarball https://github.com/nixos/nixpkgs/tarball/{{packageDetail!.revision}}) &#123;
@@ -42,21 +41,22 @@ let
   &#125;;
 in
 &#123;</pre>
-      <p>Then, in your list of packages, add <code>custom.{{packageDetail!.name}}</code>:</p>
-      <pre>
+        <p>Then, in your list of packages, add <code>custom.{{packageDetail!.name}}</code>:</p>
+        <pre>
 environment.systemPackages = [
   custom.{{packageDetail!.name}}
-  pkgs.your-other-packages
+          pkgs.your-other-packages
 ];</pre>
-      <h3>Install using <code>nix-env</code></h3>
-      <p>
-        <strong>Unless you really know what you're doing, you should not use <code>nix-env</code> to install an old version of a package.</strong>
-        If you're not sure why this might be a bad idea, you probably shouldn't be doing it and you should use <code>nix-shell</code> instead.
-      </p>
-      <p>
-        To install using <code>nix-env</code>, run the following command:
-      </p>
-      <code>nix-env -iA {{packageDetail!.name}} -f https://github.com/NixOS/nixpkgs/archive/{{packageDetail!.revision}}.tar.gz</code>
+        <h3>Install using <code>nix-env</code></h3>
+        <p>
+          <strong>Unless you really know what you're doing, you should not use <code>nix-env</code> to install an old version of a package.</strong>
+          If you're not sure why this might be a bad idea, you probably shouldn't be doing it and you should use <code>nix-shell</code> instead.
+        </p>
+        <p>
+          To install using <code>nix-env</code>, run the following command:
+        </p>
+        <code>nix-env -iA {{packageDetail!.name}} -f https://github.com/NixOS/nixpkgs/archive/{{packageDetail!.revision}}.tar.gz</code>
+      </div>
     </div>
   </div>
-</div>
+}

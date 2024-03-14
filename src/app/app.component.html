@@ -1,9 +1,11 @@
-<ng-template #loadingPackages>
+@if (error()) {
+  <app-error [message]="error()">
+    You can file an issue on <a href="https://github.com/RikudouSage/NixPackageHistoryFrontend" target="_blank" rel="noopener noreferrer">GitHub</a>.
+  </app-error>
+} @else if (!(packageNames().length && tags().length)) {
   <app-loader message="Populating package cache, please wait... (this is only gonna happen when you use a new browser)"/>
-</ng-template>
-
-<ng-template #content>
-  <div *ngIf="packageNames().length && tags().length; else loadingPackages">
+} @else {
+  <div>
     <header>
       <div class="navbar navbar-static-top">
         <div class="navbar-inner">
@@ -28,9 +30,13 @@
                 <input type="text" id="search-query-input" autofocus autocomplete="off"
                        formControlName="packageName"
                        placeholder="Search for package versions"/>
-                <ul class="autocomplete-results" *ngIf="!childDisplayed()">
-                  <li *ngFor="let option of autocompleteHints()" (click)="goToPackage(option.package)" [innerHTML]="option.displayName | pseudoTags"></li>
-                </ul>
+                @if (!childDisplayed()) {
+                  <ul class="autocomplete-results">
+                    @for (option of autocompleteHints(); track option.displayName) {
+                      <li (click)="goToPackage(option.package)" [innerHTML]="option.displayName | pseudoTags"></li>
+                    }
+                  </ul>
+                }
               </div>
               <button class="btn" type="submit">Search</button>
             </div>
@@ -43,15 +49,13 @@
           <span>Report issues on </span>
           <a href="https://github.com/RikudouSage/NixPackageHistoryFrontend">GitHub</a>
           <span>.</span>
-          <ng-container *ngIf="latestRevision?.datetime && latestRevision?.revision">
-            Latest revision: <strong>{{latestRevision!.revision}}</strong> ({{latestRevision!.datetime! | formatDatetime}})
-          </ng-container>
+          @if (latestRevision?.datetime && latestRevision?.revision) {
+            <ng-container>
+              Latest revision: <strong>{{latestRevision!.revision}}</strong> ({{latestRevision!.datetime! | formatDatetime}})
+            </ng-container>
+          }
         </div>
       </footer>
     </div>
   </div>
-</ng-template>
-
-<app-error [message]="error()" *ngIf="error() else content">
-  You can file an issue on <a href="https://github.com/RikudouSage/NixPackageHistoryFrontend" target="_blank" rel="noopener noreferrer">GitHub</a>.
-</app-error>
+}

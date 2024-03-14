@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {Package, PackageManagerService} from "../../services/package-manager.service";
 import {ActivatedRoute} from "@angular/router";
 import {lastValueFrom} from "rxjs";
-import {NgIf} from '@angular/common';
 import {LoaderComponent} from '../../components/loader/loader.component';
 import {FormatDatetimePipe} from "../../pipes/format-datetime.pipe";
 
@@ -11,7 +10,7 @@ import {FormatDatetimePipe} from "../../pipes/format-datetime.pipe";
     templateUrl: './package-detail.component.html',
     styleUrls: ['./package-detail.component.scss'],
     standalone: true,
-  imports: [LoaderComponent, NgIf, FormatDatetimePipe]
+  imports: [LoaderComponent, FormatDatetimePipe]
 })
 export class PackageDetailComponent implements OnInit {
   public loaded = false;
