@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input, Input} from '@angular/core';
 
 @Component({
     selector: 'app-error',
@@ -7,5 +7,5 @@ import {Component, Input} from '@angular/core';
     standalone: true
 })
 export class ErrorComponent {
-  @Input({required: true}) message: string = '';
+  public message = input.required<string>();
 }

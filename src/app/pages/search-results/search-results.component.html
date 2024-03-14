@@ -1,36 +1,36 @@
-@if (!loaded) {
+@if (!loaded()) {
   <app-loader message="Loading packages"/>
 } @else {
   <div class="search-results">
     <div>
       <div>
         <div></div>
-        @if (search) {
+        @if (search()) {
           <h2>
-            Showing results {{ (start + 1) | formatNumber }}-{{ end | formatNumber }} of
-            <strong>{{ packageNames.length | formatNumber }} packages</strong>.
+            Showing results {{ (start() + 1) | formatNumber }}-{{ end() | formatNumber }} of
+            <strong>{{ packageNames().length | formatNumber }} packages</strong>.
           </h2>
-        } @else if (singlePackage) {
+        } @else if (singlePackage()) {
           <h2>
-            Showing versions for package <strong>{{ singlePackage }}</strong>
+            Showing versions for package <strong>{{ singlePackage() }}</strong>
           </h2>
         }
       </div>
       <ul>
-        @for (packageName of currentPageResults; track packageName) {
+        @for (packageName of currentPageResults(); track packageName) {
           <li class="package">
             <span (click)="openPackage(packageName)">
               <a href="javascript:void(0)">
                 {{ packageName }}
               </a>
             </span>
-            @if (openedPackage === packageName) {
-              ({{ versions.length }} versions)
+            @if (openedPackage() === packageName) {
+              ({{ versions().length }} versions)
             }
             <div></div>
             <div></div>
             <div></div>
-            @if (openedPackage === packageName) {
+            @if (openedPackage() === packageName) {
               <div>
                 <div></div>
                 <table class="table table-bordered table-striped">
@@ -39,7 +39,7 @@
                     <th>Revision</th>
                     <th>Date & time</th>
                   </tr>
-                  @for (version of versions; track version) {
+                  @for (version of versions(); track version) {
                     <tr>
                       <td>
                         <a routerLink="/package/{{version.name}}/{{version.version}}">{{ version.version }}</a>
@@ -55,19 +55,19 @@
         }
       </ul>
       <div>
-        @if (search) {
+        @if (search()) {
           <ul class="pager">
             <li>
-              <button class="btn" [disabled]="currentPage <= 1" (click)="goToPage(1)">First</button>
+              <button class="btn" [disabled]="currentPage() <= 1" (click)="goToPage(1)">First</button>
             </li>
             <li>
-              <button class="btn" [disabled]="currentPage <= 1" (click)="goToPage(currentPage - 1)">Previous</button>
+              <button class="btn" [disabled]="currentPage() <= 1" (click)="goToPage(currentPage() - 1)">Previous</button>
             </li>
             <li>
-              <button class="btn" [disabled]="currentPage >= maxPage" (click)="goToPage(currentPage + 1)">Next</button>
+              <button class="btn" [disabled]="currentPage() >= maxPage()" (click)="goToPage(currentPage() + 1)">Next</button>
             </li>
             <li>
-              <button class="btn" [disabled]="currentPage >= maxPage" (click)="goToPage(maxPage)">Last</button>
+              <button class="btn" [disabled]="currentPage() >= maxPage()" (click)="goToPage(maxPage())">Last</button>
             </li>
           </ul>
         }

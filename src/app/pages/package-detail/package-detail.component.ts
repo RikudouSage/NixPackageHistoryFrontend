@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {Package, PackageManagerService} from "../../services/package-manager.service";
 import {ActivatedRoute} from "@angular/router";
 import {lastValueFrom} from "rxjs";
@@ -13,8 +13,8 @@ import {FormatDatetimePipe} from "../../pipes/format-datetime.pipe";
   imports: [LoaderComponent, FormatDatetimePipe]
 })
 export class PackageDetailComponent implements OnInit {
-  public loaded = false;
-  public packageDetail: Package | null = null;
+  public loaded = signal(false);
+  public packageDetail = signal<Package|null>(null);
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -24,14 +24,14 @@ export class PackageDetailComponent implements OnInit {
 
   public async ngOnInit(): Promise<void> {
     this.activatedRoute.params.subscribe(async params => {
-      this.loaded = false;
+      this.loaded.set(false);
 
       const packageName: string = params['packageName'];
       const packageVersion: string = params['packageVersion'];
 
-      this.packageDetail = await lastValueFrom(this.packageManager.getPackageVersion(packageName, packageVersion));
+      this.packageDetail.set(await lastValueFrom(this.packageManager.getPackageVersion(packageName, packageVersion)));
 
-      this.loaded = true;
+      this.loaded.set(true);
     });
   }
 }
