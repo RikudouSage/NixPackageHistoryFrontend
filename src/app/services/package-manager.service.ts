@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {from, Observable, of, switchMap, tap} from "rxjs";
+import {from, map, Observable, of, switchMap, tap} from "rxjs";
 import {environment} from "../../environments/environment";
 import {CacheService} from "./cache.service";
 
@@ -108,5 +108,17 @@ export class PackageManagerService {
         return of(cacheItem.value);
       }),
     )
+  }
+
+  public getTag(tag: string): Observable<Tag | null> {
+    return this.httpClient.get<Tag|{}>(`${environment.apiUrl}/tags/${tag}`).pipe(
+      map(result => {
+        if (Object.keys(result).length === 0) {
+          return null;
+        }
+
+        return <Tag>result;
+      }),
+    );
   }
 }

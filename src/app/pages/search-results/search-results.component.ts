@@ -18,6 +18,7 @@ import {FormatDatetimePipe} from "../../pipes/format-datetime.pipe";
 export class SearchResultsComponent implements OnInit {
   private readonly perPage = 50;
 
+  public isTag: boolean = false;
   public singlePackage: string | null = null;
   public search: string | null = null;
   public packageNames: string[] = [];
@@ -48,8 +49,18 @@ export class SearchResultsComponent implements OnInit {
       this.currentPage = queryParams['page'] ? Number(queryParams['page']) : 1;
 
       if (this.singlePackage) {
-        const packageDetail = await lastValueFrom(this.packageManager.getPackage(this.singlePackage));
-        if (!packageDetail.length) {
+        if (this.singlePackage.endsWith('/tag')) {
+          this.singlePackage = this.singlePackage.substring(0, this.singlePackage.length - 4);
+          this.isTag = true;
+        }
+
+        let detail: any[];
+        if (this.isTag) {
+          detail = [await lastValueFrom(this.packageManager.getTag(this.singlePackage))].filter(item => item !== null);
+        } else {
+          detail = await lastValueFrom(this.packageManager.getPackage(this.singlePackage));
+        }
+        if (!detail.length) {
           this.search = this.singlePackage;
           this.singlePackage = null;
         } else {
@@ -89,8 +100,18 @@ export class SearchResultsComponent implements OnInit {
 
   public async openPackage(packageName: string): Promise<void> {
     this.loaded = false;
-    this.versions = (await lastValueFrom(this.packageManager.getPackage(packageName)))
-      .sort((a, b) => this.versionComparator.compare(a.version, b.version));
+    if (this.isTag) {
+      const tagDetail = (await lastValueFrom(this.packageManager.getTag(this.singlePackage!)))!
+      const packageNames = tagDetail.packages;
+      const promises: Promise<Package[]>[] = [];
+      for (const name of packageNames) {
+        promises.push(lastValueFrom(this.packageManager.getPackage(name)))
+      }
+      this.versions = (await Promise.all(promises)).flat();
+    } else {
+      this.versions = (await lastValueFrom(this.packageManager.getPackage(packageName)));
+    }
+    this.versions = this.versions.sort((a, b) => this.versionComparator.compare(a.version, b.version));
     this.openedPackage = packageName;
     this.loaded = true;
   }

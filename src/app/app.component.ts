@@ -56,8 +56,8 @@ export class AppComponent implements OnInit {
     ;
 
     return [...tagsStartsWith, ...packagesStartsWith, ...tagsContains, ...packagesContains].slice(0, 100).sort((a, b) => {
-      const packageA = a.package.endsWith('/tag') ? a.package.substring(0, a.package.length - 5) : a.package;
-      const packageB = b.package.endsWith('/tag') ? b.package.substring(0, b.package.length - 5) : b.package;
+      const packageA = a.package.endsWith('/tag') ? a.package.substring(0, a.package.length - 4) : a.package;
+      const packageB = b.package.endsWith('/tag') ? b.package.substring(0, b.package.length - 4) : b.package;
       if (packageA === packageB) {
         if (a.package.endsWith('/tag')) {
           return -1;
