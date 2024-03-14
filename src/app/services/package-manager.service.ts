@@ -4,6 +4,12 @@ import {from, Observable, of, switchMap, tap} from "rxjs";
 import {environment} from "../../environments/environment";
 import {CacheService} from "./cache.service";
 
+export interface Tag {
+  tag: string;
+  packages: string[];
+}
+
+
 export interface Package {
   name: string;
   revision: string;
@@ -83,5 +89,24 @@ export class PackageManagerService {
 
   public getLatestRevision(): Observable<LatestRevision> {
     return this.httpClient.get<LatestRevision>(`${environment.apiUrl}/latest-revision`);
+  }
+
+  public getTags(): Observable<Tag[]> {
+    return from(this.cache.getItem<Tag[]>('tags', true)).pipe(
+      switchMap(cacheItem => {
+        if (cacheItem.value === undefined) {
+          return this.httpClient.get<Tag[]>(`${environment.apiUrl}/tags`).pipe(
+            tap(tags => {
+              const validUntil = new Date();
+              validUntil.setTime(new Date().getTime() + 60 * 60 * 1_000);
+
+              this.cache.storeCache('tags', validUntil, tags);
+            }),
+          );
+        }
+
+        return of(cacheItem.value);
+      }),
+    )
   }
 }

@@ -3,7 +3,7 @@
 </ng-template>
 
 <ng-template #content>
-  <div *ngIf="packageNames().length; else loadingPackages">
+  <div *ngIf="packageNames().length && tags().length; else loadingPackages">
     <header>
       <div class="navbar navbar-static-top">
         <div class="navbar-inner">
@@ -29,9 +29,7 @@
                        formControlName="packageName"
                        placeholder="Search for package versions"/>
                 <ul class="autocomplete-results" *ngIf="!childDisplayed()">
-                  <li *ngFor="let option of autocompleteHints()" (click)="goToPackage(option)">
-                    {{option}}
-                  </li>
+                  <li *ngFor="let option of autocompleteHints()" (click)="goToPackage(option.package)" [innerHTML]="option.displayName | pseudoTags"></li>
                 </ul>
               </div>
               <button class="btn" type="submit">Search</button>
