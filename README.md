@@ -18,4 +18,4 @@ Change the url of the api in [environment.ts](src/environments/environment.ts) i
 
 Run `yarn build` to compile the production version. Afterwards, copy the contents of `dist/nix-package-history-frontend` to any webserver capable of serving html.
 
-> Note: I've pretty much copied the design from https://search.nixos.org because I'm on designer. If you wish to create a custom modern design, feel free to!
+> Note: I've pretty much copied the design from https://search.nixos.org because I'm no designer. If you wish to create a custom modern design, feel free to!
