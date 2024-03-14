@@ -76,11 +76,20 @@ export class PackageManagerService {
     if (!name) {
       return of([]);
     }
-    return this.httpClient.get<Package[]>(`${environment.apiUrl}/packages/${name}`);
+
+    return this.cachedOrFresh(
+      `package.${name}`,
+      60 * 60 * 1_000,
+      () => this.httpClient.get<Package[]>(`${environment.apiUrl}/packages/${name}`),
+    );
   }
 
   public getPackageVersion(name: string, version: string): Observable<Package> {
-    return this.httpClient.get<Package>(`${environment.apiUrl}/packages/${name}/${version}`);
+    return this.cachedOrFresh(
+      `package.${name}.${version}`,
+      60 * 60 * 1_000,
+      () => this.httpClient.get<Package>(`${environment.apiUrl}/packages/${name}/${version}`),
+    );
   }
 
   private getFreshPackageNames(): Observable<string[]> {
@@ -92,33 +101,44 @@ export class PackageManagerService {
   }
 
   public getTags(): Observable<Tag[]> {
-    return from(this.cache.getItem<Tag[]>('tags', true)).pipe(
-      switchMap(cacheItem => {
-        if (cacheItem.value === undefined) {
-          return this.httpClient.get<Tag[]>(`${environment.apiUrl}/tags`).pipe(
-            tap(tags => {
-              const validUntil = new Date();
-              validUntil.setTime(new Date().getTime() + 60 * 60 * 1_000);
-
-              this.cache.storeCache('tags', validUntil, tags);
-            }),
-          );
-        }
-
-        return of(cacheItem.value);
-      }),
-    )
+    return this.cachedOrFresh(
+      `tags`,
+      60 * 60 * 1_000,
+      () => this.httpClient.get<Tag[]>(`${environment.apiUrl}/tags`),
+    );
   }
 
   public getTag(tag: string): Observable<Tag | null> {
-    return this.httpClient.get<Tag|{}>(`${environment.apiUrl}/tags/${tag}`).pipe(
-      map(result => {
-        if (Object.keys(result).length === 0) {
-          return null;
-        }
+    return this.cachedOrFresh(
+      `tags.${tag}`,
+      60 * 60 * 1_000,
+      () => this.httpClient.get<Tag|{}>(`${environment.apiUrl}/tags/${tag}`).pipe(
+        map(result => {
+          if (Object.keys(result).length === 0) {
+            return null;
+          }
 
-        return <Tag>result;
-      }),
+          return <Tag>result;
+        }),
+      ),
     );
+  }
+
+  private cachedOrFresh<T>(cacheKey: string, cacheValidity: number, freshCallback: () => Observable<T>): Observable<T> {
+    return from(this.cache.getItem<T>(cacheKey, true))
+      .pipe(
+        switchMap(cacheItem => {
+          if (cacheItem.value !== undefined) {
+            return of(cacheItem.value);
+          }
+
+          return freshCallback().pipe(
+            tap (result => {
+              const validUntil = new Date(new Date().getTime() + cacheValidity);
+              this.cache.storeCache(cacheKey, validUntil, result);
+            }),
+          );
+        }),
+      );
   }
 }
