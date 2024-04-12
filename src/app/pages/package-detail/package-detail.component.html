@@ -27,7 +27,7 @@ pkgs.mkShell &#123;
     in
     [
       custom.{{packageDetail()!.name}}
-          ];
+    ];
 &#125;</pre>
         <p>Afterwards, just run <code>nix-shell</code>.</p>
 
@@ -45,7 +45,7 @@ in
         <pre>
 environment.systemPackages = [
   custom.{{packageDetail()!.name}}
-          pkgs.your-other-packages
+  pkgs.your-other-packages
 ];</pre>
         <h3>Install using <code>nix-env</code></h3>
         <p>
