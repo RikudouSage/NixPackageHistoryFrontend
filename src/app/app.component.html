@@ -23,7 +23,12 @@
     <div class="container main">
       <div id="content">
         <div class="search-page" [class.not-asked]="!childDisplayed()" [class.success]="childDisplayed()">
-          <h1>Search through <strong>{{packageNames().length | formatNumber}} packages</strong></h1>
+          <h1>
+            Search through <strong>{{stats().packages | formatNumber}} packages</strong>
+            @if (stats().versions) {
+              and <strong>{{stats().versions! | formatNumber}}</strong> versions
+            }
+          </h1>
           <form class="search-input" [formGroup]="form" (submit)="search()">
             <div>
               <div class="position-relative">

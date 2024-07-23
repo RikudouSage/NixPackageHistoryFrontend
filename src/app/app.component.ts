@@ -1,5 +1,5 @@
 import {Component, computed, OnInit, signal} from '@angular/core';
-import {LatestRevision, PackageManagerService, Tag} from "./services/package-manager.service";
+import {LatestRevision, PackageManagerService, Stats, Tag} from "./services/package-manager.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -13,6 +13,10 @@ import {PseudoTagsPipe} from "./pipes/pseudo-tags.pipe";
 interface AutocompleteHint {
   displayName: string;
   package: string;
+}
+
+interface PartialStats extends Partial<Stats> {
+  packages: number;
 }
 
 @Component({
@@ -29,6 +33,7 @@ export class AppComponent implements OnInit {
   public latestRevision: LatestRevision | null = null;
 
   private currentPackageName = toSignal(this.form.controls.packageName.valueChanges, {initialValue: ''});
+  private fullStats = toSignal(this.packageManager.getStats());
 
   // todo use toSignal once I find out how to handle the error
   public packageNames = signal<string[]>([]);
@@ -75,6 +80,15 @@ export class AppComponent implements OnInit {
   });
   public childDisplayed = signal(false);
   public error = signal('');
+  public stats = computed<PartialStats>(() => {
+    if (this.fullStats()) {
+      return this.fullStats()!;
+    }
+
+    return {
+      packages: this.packageNames().length,
+    };
+  });
 
   constructor(
     private readonly packageManager: PackageManagerService,

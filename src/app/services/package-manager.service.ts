@@ -22,6 +22,11 @@ export interface LatestRevision {
   revision: string | null;
 }
 
+export interface Stats {
+  packages: number;
+  versions: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -98,6 +103,10 @@ export class PackageManagerService {
 
   public getLatestRevision(): Observable<LatestRevision> {
     return this.httpClient.get<LatestRevision>(`${environment.apiUrl}/latest-revision`);
+  }
+
+  public getStats(): Observable<Stats> {
+    return this.httpClient.get<Stats>(`${environment.apiUrl}/stats`);
   }
 
   public getTags(): Observable<Tag[]> {
