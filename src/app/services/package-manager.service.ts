@@ -106,7 +106,11 @@ export class PackageManagerService {
   }
 
   public getStats(): Observable<Stats> {
-    return this.httpClient.get<Stats>(`${environment.apiUrl}/stats`);
+    return this.cachedOrFresh(
+      `stats`,
+      60 * 60 * 1_000,
+      () => this.httpClient.get<Stats>(`${environment.apiUrl}/stats`),
+    );
   }
 
   public getTags(): Observable<Tag[]> {
