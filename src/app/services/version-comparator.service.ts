@@ -28,16 +28,10 @@ export class VersionComparatorService {
       return 1;
     }
     if (prereleaseA !== null && prereleaseB !== null) {
-      const result = prereleaseA.localeCompare(prereleaseB);
-      if (result === 0) {
-        return 0;
-      }
-      if (result < 0) {
-        return -1;
-      }
-      if (result > 0) {
-        return 1;
-      }
+      const prereleaseANum = this.prereleaseToNumber(prereleaseA);
+      const prereleaseBNum = this.prereleaseToNumber(prereleaseB);
+
+      return prereleaseANum > prereleaseBNum ? -1 : 1;
     }
 
     return 0;
@@ -65,6 +59,20 @@ export class VersionComparatorService {
     const subparts = parts[2].split("-");
 
     return [parts[0], parts[1], subparts[0], subparts[1] ?? null];
+  }
+
+  private prereleaseToNumber(prerelease: string): number {
+    if (prerelease.toLowerCase().startsWith('alpha')) {
+      return 1;
+    }
+    if (prerelease.toLowerCase().startsWith('beta')) {
+      return 2;
+    }
+    if (prerelease.toLowerCase().startsWith('rc')) {
+      return 3;
+    }
+
+    return 0;
   }
 }
 

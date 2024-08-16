@@ -98,7 +98,7 @@ export class PackageManagerService {
   }
 
   private getFreshPackageNames(): Observable<string[]> {
-    return this.httpClient.get<string[]>(`${environment.apiUrl}/packages`);
+    return this.httpClient.get<string[]>(`${environment.apiUrl}/package-names`);
   }
 
   public getLatestRevision(): Observable<LatestRevision> {
