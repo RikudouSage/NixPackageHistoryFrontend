@@ -1,3 +1,32 @@
 p {
   font-size: 17px;
 }
+
+.code-block {
+  position: relative;
+}
+
+.code-block pre {
+  padding-right: 78px;
+}
+
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 58px;
+  padding: 3px 8px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #333;
+  background: #fff;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.copy-button:hover,
+.copy-button:focus {
+  background: #f5f5f5;
+  border-color: #888;
+}
