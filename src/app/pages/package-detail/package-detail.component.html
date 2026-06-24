@@ -16,6 +16,40 @@
         <p>To install using <code>nix-shell</code>, run this command:</p>
         <p><code>nix-shell -p {{packageDetail()!.name}} -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/{{packageDetail()!.revision}}.tar.gz</code></p>
 
+        <h3>Install using <strong>flake.nix</strong> file</h3>
+        <p>Put this into a <code>flake.nix</code> file:</p>
+        <pre>
+&#123;
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.customNixpkgs.url = "github:NixOS/nixpkgs/{{packageDetail()!.revision}}";
+
+  outputs = &#123; nixpkgs, customNixpkgs, ... &#125;:
+    let
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      forAllSystems = nixpkgs.lib.genAttrs systems;
+    in
+    &#123;
+      devShells = forAllSystems (system:
+        let
+          pkgs = import nixpkgs &#123; inherit system; &#125;;
+          custom = import customNixpkgs &#123; inherit system; &#125;;
+        in
+        &#123;
+          default = pkgs.mkShell &#123;
+            packages = [
+              custom.{{packageDetail()!.name}}
+            ];
+          &#125;;
+        &#125;);
+    &#125;;
+&#125;</pre>
+        <p>Afterwards, run <code>nix develop</code>.</p>
+
         <h3>Install using <strong>shell.nix</strong> file</h3>
         <p>Put this into a <code>shell.nix</code> file:</p>
         <pre>

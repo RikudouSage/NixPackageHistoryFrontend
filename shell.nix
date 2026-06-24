@@ -1,11 +1,15 @@
 { pkgs ? import <nixpkgs> {} }:
 pkgs.mkShell {
-    nativeBuildInputs = with pkgs.buildPackages; [
-      nodejs_18
+    nativeBuildInputs = with pkgs.buildPackages;
+    let
+        sls = import (builtins.fetchTarball https://github.com/nixos/nixpkgs/tarball/667993862518f5a890747dfe7aba2c6d0c7787ce) {};
+    in
+    [
+      nodejs_22
       nodePackages."@angular/cli"
-      nodePackages.serverless
+      sls.nodePackages.serverless
       yarn
-      awscli
+      awscli2
       jq
     ];
     shellHook = ''
